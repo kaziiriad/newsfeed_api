@@ -1,6 +1,8 @@
 from fastapi import FastAPI
 from core.database import engine, Base
 from contextlib import asynccontextmanager
+from routes import auth
+
 @asynccontextmanager
 async def lifespan(app: FastAPI):
     # Startup
@@ -12,6 +14,7 @@ async def lifespan(app: FastAPI):
 
 app = FastAPI(lifespan=lifespan)
 
+app.include_router(auth.router)
 
 @app.get("/")
 def read_root():
@@ -24,5 +27,4 @@ if __name__ == "__main__":
     import os
     port = int(os.getenv("PORT", 8000))
     host = os.getenv("HOST", "0.0.0.0")
-    uvicorn.run(app, host=host, port=port)
-    
+    uvicorn.run("main:app", host=host, port=port, reload=True)

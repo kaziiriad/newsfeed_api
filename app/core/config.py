@@ -2,7 +2,9 @@ import os
 from pydantic_settings import BaseSettings
 from typing import Optional
 from dotenv import load_dotenv
-load_dotenv("/mnt/c/Users/Sultan Mahmud/Desktop/Peacockindia_backend_task/.env")
+
+# Load environment variables from .env file
+load_dotenv()
 
 class Settings(BaseSettings):
 

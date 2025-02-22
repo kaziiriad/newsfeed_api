@@ -1,8 +1,5 @@
 from sqlalchemy import Column, Integer, String, ARRAY
-from sqlalchemy.ext.declarative import declarative_base
-
-Base = declarative_base()
-
+from core.database import Base
 
 class User(Base):
     __tablename__ = "users"
@@ -10,7 +7,7 @@ class User(Base):
     name = Column(String)
     email = Column(String, unique=True)
     hashed_password = Column(String)
-    subscribed_categories = Column(ARRAY(String))  # Array of category names
+    subscribed_categories = Column(ARRAY(String), default=[])  # Array of category names
 
 
 class Article(Base):

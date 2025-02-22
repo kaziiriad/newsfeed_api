@@ -3,7 +3,7 @@ from pydantic import BaseModel, EmailStr
 from typing import List
 
 class UserCreate(BaseModel):
-    username: str
+    name: str
     email: EmailStr
     password: str
 
