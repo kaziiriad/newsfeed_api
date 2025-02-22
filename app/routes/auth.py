@@ -7,7 +7,7 @@ from core.security import create_access_token, verify_password, get_hashed_passw
 from models.schemas import UserCreate, UserResponse, Token
 from models.db_models import User
 
-router = APIRouter(tags=["auth"])
+router = APIRouter(prefix="/auth", tags=["Authentication"])
 
 @router.post("/register", response_model=UserResponse)
 async def register(user: UserCreate, db: AsyncSession = Depends(get_db)):
