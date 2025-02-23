@@ -31,6 +31,7 @@ async def send_subscription_email(to_email: str, categories: list):
                 for article in articles:
                     html_content += f'<li><a href="{article["url"]}">{article["title"]}</a></li>'
                 html_content += "</ul>"
+                
             message = Mail(
                 from_email=settings.SENDGRID_FROM_EMAIL,
                 to_emails=to_email,
