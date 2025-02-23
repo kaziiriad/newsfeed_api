@@ -10,6 +10,7 @@ async def fetch_news(categories: list[str]):
                     "https://newsapi.org/v2/top-headlines",
                     params={
                         "category": category,
+                        "language": "en",
                         "apiKey": settings.NEWSAPI_KEY,
                         "pageSize": 10  # Limit results
                     },

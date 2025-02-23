@@ -24,16 +24,23 @@ class Token(BaseModel):
 class SubscriptionUpdate(BaseModel):
     categories: List[str]
 
+class PaymentCreate(BaseModel):
+    amount: int  # in cents
+    currency: str = "usd"
+
 class ArticleSource(BaseModel):
     id: str
     name: str
 
 class Article(BaseModel):
     source: ArticleSource
+    author: str | None
     title: str
     description: str | None
     url: str
-    published_at: datetime
+    urlToImage: str | None
+    publishedAt: str
+    content: str | None
 
 
 class ContentResponse(BaseModel):

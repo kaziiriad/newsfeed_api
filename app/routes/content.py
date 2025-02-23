@@ -1,9 +1,11 @@
+from datetime import datetime
 from fastapi import APIRouter, Depends, HTTPException, status
 from sqlalchemy.ext.asyncio import AsyncSession
-from models.schemas import ContentResponse
+from models.schemas import Article, ContentResponse
 from dependencies import get_current_user
 from services.content_service import fetch_news
-from core.database import get_db, User
+from core.database import get_db
+from models.db_models import User
 
 router = APIRouter(prefix="/content", tags=["Content"])
 
@@ -15,5 +17,19 @@ async def get_personalized_content(
     if not current_user.subscribed_categories:
         raise HTTPException(status.HTTP_400_BAD_REQUEST, "No subscribed categories")
     
-    articles = await fetch_news(current_user.subscribed_categories)
-    return {"articles": articles}
+    raw_articles = await fetch_news(current_user.subscribed_categories)
+    articles = []
+    for article in raw_articles:
+        cleaned_article = Article(
+            source={"id": article["source"].get("id") or "", "name": article["source"].get("name") or ""},
+            author=article.get("author") or "",
+            title=article.get("title") or "",
+            description=article.get("description") or "",
+            url=article.get("url") or "",
+            urlToImage=article.get("urlToImage") or "",
+            publishedAt=article.get("publishedAt") or datetime.now().isoformat(),
+            content=article.get("content") or ""
+        )
+        articles.append(cleaned_article)
+
+    return ContentResponse(articles=articles)

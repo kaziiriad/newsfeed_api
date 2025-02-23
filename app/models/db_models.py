@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ARRAY, JSON
+from sqlalchemy import Boolean, Column, Integer, String, ARRAY, JSON
 from core.database import Base
 
 class User(Base):
@@ -8,6 +8,7 @@ class User(Base):
     email = Column(String, unique=True)
     hashed_password = Column(String)
     subscribed_categories = Column(ARRAY(String), default=[])  # Array of category names
+    is_premium: bool = Column(Boolean, default=False)
 
 
 class Article(Base):
