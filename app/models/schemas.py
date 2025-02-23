@@ -1,6 +1,6 @@
 from datetime import datetime
 from pydantic import BaseModel, EmailStr
-from typing import List
+from typing import Dict, List
 
 class UserCreate(BaseModel):
     name: str
@@ -39,6 +39,15 @@ class Article(BaseModel):
 class ContentResponse(BaseModel):
     articles: List[Article]
 
+class ContentCategoryCreate(BaseModel):
+    name: str
+    sample_articles: List[Dict]  # List of article objects
+
+class ContentCategoryResponse(BaseModel):
+    id: int
+    name: str
+    sample_articles: List[Dict]
+
 class EmailRequest(BaseModel):
     recipient: EmailStr
     subject: str
@@ -47,4 +56,5 @@ class EmailRequest(BaseModel):
 
 class ErrorResponse(BaseModel):
     detail: str
+
 

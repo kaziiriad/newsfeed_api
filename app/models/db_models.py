@@ -1,4 +1,4 @@
-from sqlalchemy import Column, Integer, String, ARRAY
+from sqlalchemy import Column, Integer, String, ARRAY, JSON
 from core.database import Base
 
 class User(Base):
@@ -19,4 +19,10 @@ class Article(Base):
     url = Column(String)
     published_at = Column(String)
     category = Column(String)
-    
+
+class ContentCategory(Base):
+    __tablename__ = "content_categories"
+
+    id = Column(Integer, primary_key=True)
+    name = Column(String(50), unique=True)  # e.g., "Tech", "Health"
+    sample_articles = Column(JSON)  # Store articles as JSON
