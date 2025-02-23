@@ -50,3 +50,32 @@ async def send_subscription_email(to_email: str, categories: list):
             logger.error(f"Email failed: {str(e)}")
         finally:
             await db.close()  # Close the session explicitly
+
+async def send_digest_email(to_email: str, articles: list):
+    # Build HTML content
+    html_content = """
+    <h1>Your Weekly Content Digest</h1>
+    <p>Here are your recommended articles:</p>
+    """
+    for article in articles:
+        html_content += f"""
+        <div style="margin-bottom: 20px;">
+            <h3>{article.get('title', 'No title')}</h3>
+            <p>{article.get('description', '')}</p>
+            <a href="{article.get('url', '#')}">Read Article</a>
+        </div>
+        """
+    
+    # Send email via SendGrid
+    message = Mail(
+        from_email=settings.FROM_EMAIL,
+        to_emails=to_email,
+        subject="Weekly Digest - New Articles for You!",
+        html_content=html_content
+    )
+    try:
+        sg = SendGridAPIClient(settings.SENDGRID_API_KEY)
+        response = sg.send(message)
+        logger.info(f"Email sent to {to_email}. Status: {response}")
+    except Exception as e:
+        logger.info(f"Email sent to {to_email}. Status: {response}")

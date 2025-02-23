@@ -12,7 +12,7 @@ async def fetch_news(categories: list[str]):
                         "category": category,
                         "language": "en",
                         "apiKey": settings.NEWSAPI_KEY,
-                        "pageSize": 10  # Limit results
+                        "pageSize": 10  # Limit to 10 articles per category
                     },
                     timeout=10.0
                 )

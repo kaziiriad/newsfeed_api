@@ -2,7 +2,9 @@ from fastapi import FastAPI
 from sqlalchemy import select
 from core.database import AsyncSessionLocal, engine, Base
 from contextlib import asynccontextmanager
-from routes import auth, subscriptions, content, payment
+from apscheduler.schedulers.asyncio import AsyncIOScheduler
+from services.digest_service import send_weekly_digests
+from routes import auth, subscriptions, content, payment, digest_trigger
 from models.db_models import ContentCategory
 
 @asynccontextmanager
@@ -60,18 +62,27 @@ async def lifespan(app: FastAPI):
             ]
             db.add_all(categories)
             await db.commit()
-
+    
+    scheduler = AsyncIOScheduler()
+    scheduler.add_job(send_weekly_digests, "cron", day_of_week="mon", hour=9) # Every Monday at 9 AM
+    scheduler.start()
     yield
-
+    scheduler.shutdown()
     # Shutdown
     # Add any cleanup code here if needed
 
-app = FastAPI(lifespan=lifespan)
+app = FastAPI(
+    lifespan=lifespan,
+    title="Newsfeed API",
+    description="A simple API for fetching and managing news subscriptions.",
+    version="1.0.0",
+              )
 
 app.include_router(auth.router)
 app.include_router(subscriptions.router)
 app.include_router(content.router)  
 app.include_router(payment.router)  
+# app.include_router(digest_trigger.router) 
 
 @app.get("/")
 def read_root():
