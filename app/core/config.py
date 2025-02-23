@@ -4,7 +4,7 @@ from typing import Optional
 from dotenv import load_dotenv
 
 # Load environment variables from .env file
-load_dotenv()
+load_dotenv("/mnt/c/Users/Sultan Mahmud/Desktop/Peacockindia_backend_task/.env")
 
 class Settings(BaseSettings):
 
@@ -21,6 +21,7 @@ class Settings(BaseSettings):
 
     NEWSAPI_KEY: Optional[str] = os.getenv("NEWSAPI_KEY")
     SENDGRID_API_KEY: Optional[str] = os.getenv("SENDGRID_API_KEY")
+    SENDGRID_FROM_EMAIL: Optional[str] = os.getenv("SENDGRID_FROM_EMAIL")
 
     class Config:
         env_file = ".env"
@@ -38,6 +39,8 @@ class Settings(BaseSettings):
         print(f"DATABASE_NAME: {os.getenv('DATABASE_NAME')}")
         print(f"DATABASE_USER: {os.getenv('DATABASE_USER')}")
         print(f"DATABASE_PASSWORD: {os.getenv('DATABASE_PASSWORD')}")
+        print(f"SENDGRID_API_KEY: {os.getenv('SENDGRID_API_KEY')}")
+        print(f"SENDGRID_FROM_EMAIL: {os.getenv('SENDGRID_FROM_EMAIL')}")
 
         print("\nSettings values:")
         print(f"DATABASE_HOST: {self.DATABASE_HOST}")

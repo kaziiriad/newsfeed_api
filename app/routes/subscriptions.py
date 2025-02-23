@@ -24,7 +24,8 @@ async def subscribe(
     if invalid_categories:
         raise HTTPException(status_code=status.HTTP_400_BAD_REQUEST, detail=f"Invalid categories: {invalid_categories}")
     
-    updated_categories = list(set(current_user.subscribed_categories + subscription.categories))
+    current_categories = current_user.subscribed_categories or []
+    updated_categories = list(set(current_categories + subscription.categories))
     current_user.subscribed_categories = updated_categories
     await db.commit()
     await db.refresh(current_user)
@@ -39,8 +40,8 @@ async def unsubscribe(
     current_user: User = Depends(get_current_user),
     db: AsyncSession = Depends(get_db)
 ):
-
-    updated_categories = [category for category in current_user.subscribed_categories if category not in subscription.categories]
+    current_categories = current_user.subscribed_categories or []
+    updated_categories = [category for category in current_categories if category not in subscription.categories]
     current_user.subscribed_categories = updated_categories
     await db.commit()
     await db.refresh(current_user)
