@@ -6,7 +6,12 @@ from sqlalchemy import select
 from models.db_models import ContentCategory
 from core.config import settings
 from core.database import AsyncSessionLocal  # Import session factory
+from tenacity import retry, stop_after_attempt, wait_fixed
+import logging
 
+logger = logging.getLogger(__name__)
+
+@retry(stop=stop_after_attempt(3), wait=wait_fixed(2))
 async def send_subscription_email(to_email: str, categories: list):
     """
     Sends an email to the specified recipient with subscription details.
@@ -40,8 +45,8 @@ async def send_subscription_email(to_email: str, categories: list):
             )
             sg = SendGridAPIClient(settings.SENDGRID_API_KEY)
             response = sg.send(message)
-            print(f"Email sent! Status code: {response.status_code}")
+            logger.info(f"Email sent to {to_email}. Status: {response}")
         except Exception as e:
-            print(f"Email error: {str(e)}")
+            logger.error(f"Email failed: {str(e)}")
         finally:
             await db.close()  # Close the session explicitly

@@ -2,7 +2,7 @@ from fastapi import FastAPI
 from sqlalchemy import select
 from core.database import AsyncSessionLocal, engine, Base
 from contextlib import asynccontextmanager
-from routes import auth, subscriptions, content
+from routes import auth, subscriptions, content, payment
 from models.db_models import ContentCategory
 
 @asynccontextmanager
@@ -70,7 +70,8 @@ app = FastAPI(lifespan=lifespan)
 
 app.include_router(auth.router)
 app.include_router(subscriptions.router)
-app.include_router(content.router)  # Add this line
+app.include_router(content.router)  
+app.include_router(payment.router)  
 
 @app.get("/")
 def read_root():

@@ -23,6 +23,9 @@ class Settings(BaseSettings):
     SENDGRID_API_KEY: Optional[str] = os.getenv("SENDGRID_API_KEY")
     SENDGRID_FROM_EMAIL: Optional[str] = os.getenv("SENDGRID_FROM_EMAIL")
 
+    STRIPE_SECRET_KEY: Optional[str] = os.getenv("STRIPE_SECRET_KEY")
+    STRIPE_WEBHOOK_SECRET: Optional[str] = os.getenv("STRIPE_WEBHOOK_SECRET")
+
     class Config:
         env_file = ".env"
         case_sensitive = True
