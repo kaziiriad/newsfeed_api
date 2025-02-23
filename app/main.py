@@ -4,8 +4,9 @@ from core.database import AsyncSessionLocal, engine, Base
 from contextlib import asynccontextmanager
 from apscheduler.schedulers.asyncio import AsyncIOScheduler
 from services.digest_service import send_weekly_digests
-from routes import auth, subscriptions, content, payment, digest_trigger
+from routes import auth, subscriptions, content, payment, digest_trigger  # noqa: F401
 from models.db_models import ContentCategory
+import logging
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
@@ -77,6 +78,8 @@ app = FastAPI(
     description="A simple API for fetching and managing news subscriptions.",
     version="1.0.0",
               )
+
+logging.basicConfig(level=logging.INFO)
 
 app.include_router(auth.router)
 app.include_router(subscriptions.router)

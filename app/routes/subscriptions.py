@@ -22,7 +22,7 @@ async def subscribe(
     db: AsyncSession = Depends(get_db),
 ):
     result = await db.execute(select(ContentCategory.name))
-    allowed_categories = [cat.name for cat in result.scalars().all()]
+    allowed_categories = [cat for cat in result.scalars().all()]
 
     invalid_categories = [
         category

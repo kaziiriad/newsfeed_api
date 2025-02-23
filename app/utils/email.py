@@ -78,4 +78,23 @@ async def send_digest_email(to_email: str, articles: list):
         response = sg.send(message)
         logger.info(f"Email sent to {to_email}. Status: {response}")
     except Exception as e:
-        logger.info(f"Email sent to {to_email}. Status: {response}")
+        logger.info(f"Email to {to_email} failed. Status: {response}")
+
+@retry(stop=stop_after_attempt(3), wait=wait_fixed(2))
+async def send_payment_confirmation(email: str):
+    """
+    Sends a confirmation email to the specified recipient after successful payment.
+    """
+    message = Mail(
+        from_email=settings.SENDGRID_FROM_EMAIL,
+        to_emails=email,
+        subject="Payment Confirmed",
+        html_content="<h3>Thank you for your payment!</h3>"
+    )
+    try:
+        sg = SendGridAPIClient(settings.SENDGRID_API_KEY)
+        response = sg.send(message)
+        logger.info(f"Email sent to {email}. Status: {response}")
+    except Exception as e:
+        logger.error(f"Email to {email} failed: {str(e)}")
+        

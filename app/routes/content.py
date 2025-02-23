@@ -33,3 +33,12 @@ async def get_personalized_content(
         articles.append(cleaned_article)
 
     return ContentResponse(articles=articles)
+
+@router.get("/premium")
+async def get_premium_content(
+    user: User = Depends(get_current_user)
+):
+    if not user.is_premium:
+        return {"content": "Upgrade to premium for exclusive articles!"}
+        
+    return {"content": "Exclusive premium articles here!"}

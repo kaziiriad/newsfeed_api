@@ -8,6 +8,7 @@ class User(Base):
     email = Column(String, unique=True)
     hashed_password = Column(String)
     subscribed_categories = Column(ARRAY(String), default=[])  # Array of category names
+    stripe_customer_id: str = Column(String, nullable=True) # Stripe customer ID
     is_premium: bool = Column(Boolean, default=False)
 
 
