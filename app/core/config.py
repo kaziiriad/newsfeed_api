@@ -36,20 +36,4 @@ class Settings(BaseSettings):
             port = self.DATABASE_PORT if self.DATABASE_PORT else "5432"            
             self.DATABASE_URL = f"postgresql+asyncpg://{self.DATABASE_USER}:{self.DATABASE_PASSWORD}@{self.DATABASE_HOST}:{port}/{self.DATABASE_NAME}"
 
-        print("Environment variables:")
-        print(f"DATABASE_HOST: {os.getenv('DATABASE_HOST')}")
-        print(f"DATABASE_PORT: {os.getenv('DATABASE_PORT')}")
-        print(f"DATABASE_NAME: {os.getenv('DATABASE_NAME')}")
-        print(f"DATABASE_USER: {os.getenv('DATABASE_USER')}")
-        print(f"DATABASE_PASSWORD: {os.getenv('DATABASE_PASSWORD')}")
-        print(f"SENDGRID_API_KEY: {os.getenv('SENDGRID_API_KEY')}")
-        print(f"SENDGRID_FROM_EMAIL: {os.getenv('SENDGRID_FROM_EMAIL')}")
-
-        print("\nSettings values:")
-        print(f"DATABASE_HOST: {self.DATABASE_HOST}")
-        print(f"DATABASE_PORT: {self.DATABASE_PORT}")
-        print(f"DATABASE_NAME: {self.DATABASE_NAME}")
-        print(f"DATABASE_USER: {self.DATABASE_USER}")
-        print(f"DATABASE_URL: {self.DATABASE_URL}")
-
 settings = Settings()

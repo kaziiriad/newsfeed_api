@@ -5,7 +5,7 @@ from .config import settings
 
 engine = create_async_engine(
     settings.DATABASE_URL,
-    echo=True,  # Log SQL queries (disable in production)
+    echo=False,  # Log SQL queries (disable in production)
     future=True  # Enable SQLAlchemy 2.0 features
 )
 
