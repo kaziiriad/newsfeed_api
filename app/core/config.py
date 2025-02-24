@@ -15,7 +15,7 @@ class Settings(BaseSettings):
     DATABASE_PASSWORD: str = os.getenv("DATABASE_PASSWORD", "mypassword")
     DATABASE_URL: Optional[str] = None
 
-    JWT_SECRET: str = os.getenv("JWT_SECRET", "your-secret-key")
+    JWT_SECRET: str 
     JWT_ALGORITHM: str = os.getenv("JWT_ALGORITHM", "HS256")
     JWT_EXPIRATION: int = int(os.getenv("JWT_EXPIRATION", "30"))
 
@@ -23,6 +23,7 @@ class Settings(BaseSettings):
     SENDGRID_API_KEY: Optional[str] = os.getenv("SENDGRID_API_KEY")
     SENDGRID_FROM_EMAIL: Optional[str] = os.getenv("SENDGRID_FROM_EMAIL")
 
+    STRIPE_PUBLIC_KEY: Optional[str] = os.getenv("STRIPE_PUBLIC_KEY")
     STRIPE_SECRET_KEY: Optional[str] = os.getenv("STRIPE_SECRET_KEY")
     STRIPE_WEBHOOK_SECRET: Optional[str] = os.getenv("STRIPE_WEBHOOK_SECRET")
 

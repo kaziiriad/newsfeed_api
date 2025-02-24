@@ -30,5 +30,6 @@ COPY requirements.txt .
 RUN uv pip install -r requirements.txt
 
 COPY ./app .
+COPY static/ /app/static/
 
 CMD ["uv", "run", "main.py"]

@@ -1,0 +1,235 @@
+<!-- <!DOCTYPE html>
+<html>
+<head>
+    <title>Payment Test</title>
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 500px; margin: 2rem auto; padding: 1rem; }
+        .card-element { border: 1px solid #ccc; padding: 10px; margin: 10px 0; border-radius: 4px; }
+        button { background: #5469d4; color: white; padding: 12px; border: none; border-radius: 4px; cursor: pointer; }
+        .error { color: red; margin-top: 10px; }
+        .success { color: green; margin-top: 10px; }
+    </style>
+</head>
+<body>
+    <h1>Test Payment</h1>
+    
+    <div id="card-element" class="card-element"></div>
+    
+    <div id="error-message" class="error"></div>
+    <div id="success-message" class="success"></div>
+    
+    <button id="submit-button">Pay $9.99</button>
+    
+    <!-- <script>
+        // const stripe = Stripe('pk_test_51Qvd8I2ahPBNyoyWhQRfqwCB5bBCXZAfG5QaXdrJHWSnTGrqaHZ5Os9yb9zwQnuCUAYbisqHm1hKriE8MUDf5my100pNhN3umD'); // Replace with your key
+        
+        // Initialize Stripe Elements
+        let stripe;
+  
+        // Fetch config from backend
+        async function initializeStripe() {
+            const response = await fetch('/config');
+            const config = await response.json();
+            
+            // Initialize Stripe with dynamic key
+            stripe = Stripe(config.stripePublishableKey);
+        }
+
+  // Call on page load
+        initializeStripe();
+        const elements = stripe.elements();
+        const cardElement = elements.create('card');
+        cardElement.mount('#card-element');
+
+        // Payment Handler
+        document.getElementById('submit-button').addEventListener('click', async (e) => {
+            e.preventDefault();
+            
+            // Get payment intent client secret from backend
+            try {
+                const response = await fetch('http://localhost:8000/payment/create-intent', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        // Add Authorization header if needed
+                        'Authorization': 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiJrYXppaXJpYWRAZ21haWwuY29tIiwiZXhwIjoxNzQwMzg4NjEyfQ.nihEsu1hC89IQzlJ3RPwndI7ioTMJ-xR7zdMZqHIGfE'
+                    }
+                });
+                
+                const { clientSecret } = await response.json();
+                
+                // Confirm payment
+                const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+                    payment_method: {
+                        card: cardElement,
+                        billing_details: {
+                            name: 'Test User'
+                        }
+                    }
+                });
+
+                if (error) {
+                    document.getElementById('error-message').textContent = error.message;
+                } else if (paymentIntent.status === 'succeeded') {
+                    document.getElementById('success-message').textContent = 
+                        'Payment succeeded! Check backend logs for webhook processing.';
+                }
+            } catch (err) {
+                document.getElementById('error-message').textContent = 
+                    'Error processing payment. Check console for details.';
+                console.error(err);
+            }
+        });
+    </script>
+    <div style="margin-top: 2rem; color: #666;">
+        <h3>Test Card Details:</h3>
+        <p>Card Number: 4242 4242 4242 4242</p>
+        <p>Expiry: Any future date (e.g., 12/34)</p>
+        <p>CVC: Any 3 digits (e.g., 123)</p>
+    </div>
+</body>
+</html> -->
+
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Payment Test</title>
+    <script src="https://js.stripe.com/v3/"></script>
+    <style>
+        body { font-family: Arial, sans-serif; max-width: 500px; margin: 2rem auto; padding: 1rem; }
+        .card-element { border: 1px solid #ccc; padding: 10px; margin: 10px 0; border-radius: 4px; }
+        button { background: #5469d4; color: white; padding: 12px; border: none; border-radius: 4px; cursor: pointer; }
+        .error { color: red; margin-top: 10px; }
+        .success { color: green; margin-top: 10px; }
+        .login-form { margin-bottom: 20px; }
+        .login-form input { margin-right: 10px; padding: 5px; }
+    </style>
+</head>
+<body>
+    <h1>Test Payment</h1>
+    
+    <!-- Login Form -->
+    <div class="login-form">
+        <input type="email" id="username" placeholder="Email">
+        <input type="password" id="password" placeholder="Password">
+        <button id="login-button">Login</button>
+    </div>
+
+    <!-- Card Element -->
+    <div id="card-element" class="card-element"></div>
+    
+    <!-- Error/Success Messages -->
+    <div id="error-message" class="error"></div>
+    <div id="success-message" class="success"></div>
+    
+    <!-- Payment Button -->
+    <button id="submit-button">Pay $9.99</button>
+    
+    <script>
+        let stripe;
+        let cardElement;
+
+        // Fetch config from backend
+        async function initializeStripe() {
+            const response = await fetch('/config');
+            const config = await response.json();
+            
+            // Initialize Stripe with dynamic key
+            stripe = Stripe(config.stripePublishableKey);
+
+            const elements = stripe.elements();
+            cardElement = elements.create('card');
+            cardElement.mount('#card-element');
+        }
+
+        // Login function
+        async function login() {
+            const username = document.getElementById('username').value;
+            const password = document.getElementById('password').value;
+
+            try {
+                const formData = new FormData();
+                formData.append('username', username); // Backend expects email in 'username' field
+                formData.append('password', password);
+
+                const response = await fetch('/auth/login', {
+                    method: 'POST',
+                    // headers: {
+                    //     'Content-Type': 'application/json'
+                    // },
+                    body: formData
+                });
+                if (!response.ok) {
+                    throw new Error('Login failed');
+                }
+
+                const { access_token } = await response.json();
+                
+                // Store token for future requests
+                localStorage.setItem('jwt', access_token);
+                document.getElementById('success-message').textContent = 'Login successful!';
+            } catch (error) {
+                document.getElementById('error-message').textContent = 'Login failed. Please try again.';
+            }
+        }
+
+        // Payment Handler
+        async function handlePayment(e) {
+            e.preventDefault();
+            
+            // Get payment intent client secret from backend
+            try {
+                const response = await fetch('/payment/create-intent', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json',
+                        'Authorization': `Bearer ${localStorage.getItem('jwt')}`
+                    }
+                });
+                
+                const { clientSecret } = await response.json();
+                
+                // Confirm payment
+                const { error, paymentIntent } = await stripe.confirmCardPayment(clientSecret, {
+                    payment_method: {
+                        card: cardElement,
+                        billing_details: {
+                            name: 'Test User'
+                        }
+                    }
+                });
+
+                if (error) {
+                    document.getElementById('error-message').textContent = error.message;
+                } else if (paymentIntent.status === 'succeeded') {
+                    document.getElementById('success-message').textContent = 
+                        'Payment succeeded! Check backend logs for webhook processing.';
+                }
+            } catch (err) {
+                document.getElementById('error-message').textContent = 
+                    'Error processing payment. Check console for details.';
+                console.error(err);
+            }
+        }
+
+        // Initialize app
+        function initializeApp() {
+            initializeStripe();
+            document.getElementById('login-button').addEventListener('click', login);
+            document.getElementById('submit-button').addEventListener('click', handlePayment);
+        }
+
+        // Call on page load
+        window.onload = initializeApp;
+    </script>
+
+    <!-- Test Card Details -->
+    <div style="margin-top: 2rem; color: #666;">
+        <h3>Test Card Details:</h3>
+        <p>Card Number: 4242 4242 4242 4242</p>
+        <p>Expiry: Any future date (e.g., 12/34)</p>
+        <p>CVC: Any 3 digits (e.g., 123)</p>
+    </div>
+</body>
+</html>
