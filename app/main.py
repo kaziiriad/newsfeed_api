@@ -1,4 +1,6 @@
 from fastapi import FastAPI
+from fastapi.staticfiles import StaticFiles
+from fastapi.middleware.cors import CORSMiddleware
 from sqlalchemy import select
 from core.database import AsyncSessionLocal, engine, Base
 from contextlib import asynccontextmanager
@@ -79,6 +81,14 @@ app = FastAPI(
     version="1.0.0",
               )
 
+app.add_middleware(
+    CORSMiddleware,
+    allow_origins=["*"],
+    allow_credentials=True,
+    allow_methods=["*"],
+    allow_headers=["*"],
+)
+
 logging.basicConfig(level=logging.INFO)
 
 app.include_router(auth.router)
@@ -86,6 +96,7 @@ app.include_router(subscriptions.router)
 app.include_router(content.router)  
 app.include_router(payment.router)  
 # app.include_router(digest_trigger.router) 
+# app.mount("/static", StaticFiles(directory="static"), name="static")
 
 @app.get("/")
 def read_root():

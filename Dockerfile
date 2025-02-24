@@ -23,6 +23,8 @@ ENV VIRTUAL_ENV=/app/.venv
 RUN uv venv --relocatable
 ENV PATH="/app/.venv/bin:$PATH"
 
+RUN uv pip install --upgrade pip setuptools
+
 COPY requirements.txt .
 
 RUN uv pip install -r requirements.txt

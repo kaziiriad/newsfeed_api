@@ -1,6 +1,6 @@
 import stripe
 from fastapi import APIRouter, Depends, HTTPException, Header, Request, status
-from fastapi.responses import JSONResponse
+from fastapi.responses import FileResponse
 from core.database import get_db
 from models.db_models import User
 from dependencies import get_current_user
@@ -89,3 +89,8 @@ async def stripe_webhook(
     except Exception as e:
         logger.error(f"Webhook error: {str(e)}")
         raise
+
+# @router.get("/test")
+# async def payment_test_page(current_user: User = Depends(get_current_user)):
+#     logger.info(f"User {current_user.id} accessed payment test page")
+#     return FileResponse("static/payment.html")
